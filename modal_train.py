@@ -32,10 +32,10 @@ image = (
     .run_commands("git clone https://github.com/willccbb/verifiers.git /verifiers")
     .run_commands("git clone https://github.com/sutyum/LearnToClarify.git /LearnToClarify")
     # Install dependencies for verifiers
-    .run_commands("cd /verifiers && .venv/bin/uv sync")
-    .run_commands("cd /LearnToClarify && .venv/bin/uv sync")
+    .run_commands("cd /verifiers && /root/.local/bin/uv sync")
+    .run_commands("cd /LearnToClarify && /root/.local/bin/uv sync")
     # Install flash-attn into LearnToClarify's virtual environment
-    .run_commands("cd /LearnToClarify && .venv/bin/uv pip install flash-attn --no-build-isolation")
+    .run_commands("cd /LearnToClarify && /root/.local/bin/uv pip install flash-attn --no-build-isolation")
 )
 
 # Define the app
