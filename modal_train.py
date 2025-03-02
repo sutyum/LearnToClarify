@@ -30,9 +30,12 @@ image = (
     .pip_install("uv")
     .pip_install("accelerate")
 
-    .run_commands("git clone https://github.com/sutyum/LearnToClarify.git /LearnToClarify")
-    .workdir("/LearnToClarify")
-    .run_commands("uv sync")
+    .workdir("/root")
+    .add_local_file("pyproject.toml", "/root/LearnToClarify/pyproject.toml", copy=True)
+    .add_local_file("zero3.yaml", "/root/LearnToClarify/zero3.yaml", copy=True)
+    .add_local_file("train.py", "/root/LearnToClarify/train.py", copy=True)
+
+    .run_commands("cd /root/LearnToClarify && uv sync")
     # .run_commands("uv pip install flash-attn --no-build-isolation")
 )
 
@@ -50,7 +53,9 @@ def train():
     import subprocess
 
     # Command to activate virtual environment and run training
-    cmd = "accelerate launch --config-file /LearnToClarify/zero3.yaml --num-processes 2 /LearnToClarify/train.py"
+    cmd = (
+        "cd /root/LearnToClarify && uv run accelerate launch --config-file zero3.yaml --num-processes 2 train.py"
+    )
     subprocess.run(cmd, shell=True, check=True)
 
 # Optional: Local entrypoint for testing
