@@ -1,28 +1,5 @@
 import modal
 
-config_content = """compute_environment: LOCAL_MACHINE
-debug: false
-deepspeed_config:
-  deepspeed_multinode_launcher: standard
-  offload_optimizer_device: none
-  offload_param_device: none
-  zero3_init_flag: true
-  zero3_save_16bit_model: true
-  zero_stage: 3
-distributed_type: DEEPSPEED
-downcast_bf16: 'no'
-machine_rank: 0
-main_training_function: main
-mixed_precision: bf16
-num_machines: 1
-num_processes: 8
-rdzv_backend: static
-same_network: true
-tpu_env: []
-tpu_use_cluster: false
-tpu_use_sudo: false
-use_cpu: false"""
-
 # Define the custom image
 image = (
     modal.Image.from_registry("pytorch/pytorch:2.5.1-cuda12.1-cudnn9-devel")
