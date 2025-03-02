@@ -4,6 +4,7 @@ Offer the following training variants:
 - With or without tools
 """
 
+import os
 import argparse
 import verifiers as vf
 from verifiers.tools import calculator
@@ -114,7 +115,7 @@ try:
     # Upload the model to Hugging Face
     api = HfApi()
     api.upload_folder(
-        folder_path=final_model_path, repo_id=args.model_repo_name, repo_type="model"
+        folder_path=final_model_path, repo_id=args.model_repo_name, repo_type="model", token=os.environ["HF_TOKEN"]
     )
     logging.info(f"Model uploaded to: https://huggingface.co/{args.model_repo_name}")
 
