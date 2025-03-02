@@ -26,16 +26,14 @@ use_cpu: false"""
 # Define the custom image
 image = (
     modal.Image.from_registry("pytorch/pytorch:2.5.1-cuda12.1-cudnn9-devel")
-    .run_commands("apt-get update && apt-get install -y git")
-    .run_commands("curl -LsSf https://astral.sh/uv/install.sh | sh")
-    # Clone both repositories
-    .run_commands("git clone https://github.com/willccbb/verifiers.git /verifiers")
+    .apt_install("git")
+    .pip_install("uv")
+    .pip_install("accelerate")
+
     .run_commands("git clone https://github.com/sutyum/LearnToClarify.git /LearnToClarify")
-    # Install dependencies for verifiers
-    .run_commands("cd /verifiers && /root/.local/bin/uv sync")
-    .run_commands("cd /LearnToClarify && /root/.local/bin/uv sync")
-    # Install flash-attn into LearnToClarify's virtual environment
-    .run_commands("cd /LearnToClarify && /root/.local/bin/uv pip install flash-attn --no-build-isolation")
+    .workdir("/LearnToClarify")
+    .run_commands("uv sync")
+    # .run_commands("uv pip install flash-attn --no-build-isolation")
 )
 
 # Define the app
@@ -45,16 +43,14 @@ app = modal.App("verifiers-training")
 @app.function(
     image=image,
     gpu="A100:2",  # Use 2 A100 GPUs
-    secrets=[modal.Secret.from_name("huggingface-secret"), modal.Secret.from_name("wandb-secret")],  # For HF_TOKEN
+    secrets=[modal.Secret.from_name("huggingface-secret"), modal.Secret.from_name("wandb-secret")],
     timeout=4 * 60 * 60,  # 4 hours
 )
 def train():
     import subprocess
+
     # Command to activate virtual environment and run training
-    cmd = (
-        "source /LearnToClarify/.venv/bin/activate && "
-        "accelerate launch --config-file /LearnToClarify/zero3.yaml --num-processes 2 /LearnToClarify/train.py"
-    )
+    cmd = "accelerate launch --config-file /LearnToClarify/zero3.yaml --num-processes 2 /LearnToClarify/train.py"
     subprocess.run(cmd, shell=True, check=True)
 
 # Optional: Local entrypoint for testing

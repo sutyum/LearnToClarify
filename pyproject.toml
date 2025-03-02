@@ -8,4 +8,8 @@ dependencies = [
     "datasets>=3.3.2",
     "huggingface-hub>=0.29.1",
     "modal>=0.73.78",
+    "verifiers",
 ]
+
+[tool.uv.sources]
+verifiers = { git = "https://github.com/sutyum/verifiers.git" }
