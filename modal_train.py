@@ -5,6 +5,7 @@ image = (
     modal.Image.from_registry("pytorch/pytorch:2.5.1-cuda12.1-cudnn9-devel")
     .apt_install("git")
     .pip_install("uv")
+    .pip_install("torch")
     .pip_install("accelerate")
 
     .workdir("/root")
@@ -14,7 +15,7 @@ image = (
     .add_local_file("gsm8k_simple.py", "/root/LearnToClarify/gsm8k_simple.py", copy=True)
 
     .run_commands("cd /root/LearnToClarify && uv sync", force_build=True)
-    # .run_commands("uv pip install flash-attn --no-build-isolation")
+    .run_commands("cd /root/LearnToClarify && uv pip install flash-attn --no-build-isolation")
 )
 
 # Define the app

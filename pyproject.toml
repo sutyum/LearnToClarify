@@ -9,6 +9,7 @@ dependencies = [
     "datasets>=3.3.2",
     "huggingface-hub>=0.29.1",
     "modal>=0.73.78",
+    "torch>=2.5.1",
     "verifiers",
 ]
 
