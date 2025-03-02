@@ -30,11 +30,10 @@ image = (
     .run_commands("curl -LsSf https://astral.sh/uv/install.sh | sh")
     # Clone both repositories
     .run_commands("git clone https://github.com/willccbb/verifiers.git /verifiers")
-    .run_commands("git clone https://github.com/your-username/LearnToClarify.git /LearnToClarify")
+    .run_commands("git clone https://github.com/sutyum/LearnToClarify.git /LearnToClarify")
     # Install dependencies for verifiers
-    .run_commands("cd /verifiers && /root/.cargo/bin/uv sync")
-    # Install dependencies for LearnToClarify (assumes it may depend on verifiers)
-    .run_commands("cd /LearnToClarify && /root/.cargo/bin/uv sync")
+    .run_commands("cd /verifiers && .venv/bin/uv sync")
+    .run_commands("cd /LearnToClarify && .venv/bin/uv sync")
     # Install flash-attn into LearnToClarify's virtual environment
     .run_commands("cd /LearnToClarify && .venv/bin/uv pip install flash-attn --no-build-isolation")
 )
@@ -46,7 +45,7 @@ app = modal.App("verifiers-training")
 @app.function(
     image=image,
     gpu="A100:2",  # Use 2 A100 GPUs
-    secrets=[modal.Secret.from_name("hf-token")],  # For HF_TOKEN
+    secrets=[modal.Secret.from_name("huggingface-secret"), modal.Secret.from_name("wandb-secret")],  # For HF_TOKEN
     timeout=4 * 60 * 60,  # 4 hours
 )
 def train():
