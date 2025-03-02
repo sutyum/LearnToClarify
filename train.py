@@ -53,6 +53,7 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
+logging.info(f"Arguments: {args}")
 
 # Load model and tokenizer
 model_name = args.model_name
