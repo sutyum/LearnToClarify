@@ -9,7 +9,7 @@ image = (
     .run_commands("rm -rf /root/verifiers || true")
     .run_commands("pip uninstall -y verifiers || true")
     # Clone and install the repository correctly
-    .run_commands("cd /root && git clone https://github.com/sutyum/verifiers.git")
+    .run_commands("cd /root && git clone https://github.com/sutyum/verifiers.git", force_build=True)
     # Install the package in development mode with pip (not uv)
     .run_commands("cd /root/verifiers && pip install -e .")
     # Install other dependencies
