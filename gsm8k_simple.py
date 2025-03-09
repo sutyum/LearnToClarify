@@ -1,9 +1,9 @@
 import verifiers as vf
 
-model_name = "chinmaydk99/Qwen2.5-0.5b-GRPO-math",
+model_name = "chinmaydk99/Qwen2.5-0.5b-GRPO-math"
 model, tokenizer = vf.get_model_and_tokenizer(model_name)
 
-vf_env = vf.MathEnv(dataset="Technoculture/ambiguous_gsm8k")
+vf_env = vf.MathEnv(dataset="Technoculture/ambiguous_gsm8k", max_steps=5)
 dataset = vf_env.get_dataset()
 rubric = vf_env.get_rubric()
 
