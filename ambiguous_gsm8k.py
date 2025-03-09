@@ -86,7 +86,8 @@ def load_ambiguous_gsm8k():
         ambiguous_question = question
 
         for idx, (num, before, after) in enumerate(numbers_to_obscure, start=1):
-            placeholder = f"some number"
+            # Create a natural-sounding placeholder that flows with the text
+            placeholder = f"a certain number"
             ambiguous_question = ambiguous_question.replace(num, placeholder, 1)
 
             # Ensure unique keywords for each obscured number
