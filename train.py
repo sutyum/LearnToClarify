@@ -8,7 +8,7 @@ import os
 import argparse
 import verifiers as vf
 from verifiers.tools import calculator
-from verifiers.prompts import SEARCH_FEW_SHOT
+# from verifiers.prompts import SEARCH_FEW_SHOT
 import logging
 from huggingface_hub import HfApi, create_repo
 
@@ -24,27 +24,27 @@ parser = argparse.ArgumentParser(
 parser.add_argument(
     "--model_name",
     type=str,
-    default="Qwen/Qwen2.5-1.5B-Instruct",
-    # default="Qwen/Qwen2.5-7B-Instruct",
+    default="chinmaydk99/Qwen2.5-0.5b-GRPO-math",
     help="Model name to train. Default: Qwen/Qwen2.5-7B-Instruct",
 )
 parser.add_argument(
-    "--max_steps", type=int, default=3, help="Number of steps to train. Default: 3"
+    "--max_steps", type=int, default=5, help="Number of steps to train. Default: 3"
 )
 parser.add_argument(
-    "--num_gpus", type=int, default=2, help="Number of GPUs to use. Default: 2"
+    "--num_gpus", type=int, default=1, help="Number of GPUs to use. Default: 2"
 )
 parser.add_argument(
     "--use_gsm8k",
     action="store_true",
+    default=False,
     help="Train sequentially on GSM8k then ambiguous-gsm8k",
 )
 parser.add_argument(
-    "--use_calculator", action="store_true", help="Use calculator tool during training"
+    "--use_calculator", action="store_true", defualt=False, help="Use calculator tool during training"
 )
 parser.add_argument(
     "--save_checkpoints",
-    action="store_true",
+    action="store_true", default=True,
     help="Save model checkpoints after each dataset",
 )
 parser.add_argument(
@@ -65,7 +65,7 @@ model, tokenizer = vf.get_model_and_tokenizer(model_name)
 tools = [calculator] if args.use_calculator else []
 
 # Determine datasets for training
-datasets = ["gsm8k", "ambiguous_gsm8k"] if args.use_gsm8k else ["ambiguous_gsm8k"]
+datasets = ["gsm8k", "Technoculture/ambiguous_gsm8k"] if args.use_gsm8k else ["Technoculture/ambiguous_gsm8k"]
 
 # Train sequentially on each dataset
 for dataset in datasets:

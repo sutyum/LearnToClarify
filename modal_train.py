@@ -16,11 +16,12 @@ image = (
     .run_commands("pip install torch accelerate flash-attn")
     .add_local_file("zero3.yaml", "/root/LearnToClarify/zero3.yaml")
     .add_local_file("gsm8k_simple.py", "/root/LearnToClarify/gsm8k_simple.py")
+    .add_local_file("train.py", "/root/LearnToClarify/train.py")
 )
 
 app = modal.App("verifiers-training")
 
-PROC_COUNT = 2
+PROC_COUNT = 1
 
 @app.function(
     image=image,
@@ -31,7 +32,7 @@ PROC_COUNT = 2
     ],
     timeout=4 * 60 * 60,
 )
-def train():
+def train(ambiguous: bool = False):
     # import os
     import sys
     import subprocess
@@ -39,7 +40,7 @@ def train():
     # Debug: Print Python package information
     print("Python executable:", sys.executable)
     print("Python path:", sys.path)
-    
+
     # Test verifiers import directly
     print("\n=== Testing verifiers import ===")
     try:
@@ -49,17 +50,19 @@ def train():
         print("Successfully imported Environment:", Environment)
     except Exception as e:
         print(f"Import error: {e}")
-    
+
+    train_code = "train.py" if ambiguous else "gsm8k_simple.py"
+
     # Copy your gsm8k_simple.py to the root
     print("\n=== Creating runner script ===")
-    with open("/root/gsm8k_simple.py", "w") as f:
-        with open("/root/LearnToClarify/gsm8k_simple.py", "r") as src:
+    with open(f"/root/{train_code}", "w") as f:
+        with open(f"/root/LearnToClarify/{train_code}", "r") as src:
             f.write(src.read())
 
     # Try running directly first
     try:
         print("\n=== Running script directly ===")
-        subprocess.run("cd /root/LearnToClarify && python gsm8k_simple.py", shell=True, check=False)
+        subprocess.run(f"cd /root/LearnToClarify && python {train_code}", shell=True, check=False)
     except Exception as e:
         print(f"Direct execution failed: {e}")
 
@@ -68,7 +71,7 @@ def train():
     cmd = (
         "cd /root && "
         "PYTHONPATH=/root:/root/verifiers "
-        f"accelerate launch --config-file /root/LearnToClarify/zero3.yaml --num-processes {PROC_COUNT} /root/LearnToClarify/gsm8k_simple.py"
+        f"accelerate launch --config-file /root/LearnToClarify/zero3.yaml --num-processes {PROC_COUNT} /root/LearnToClarify/{train_code}"
     )
     subprocess.run(cmd, shell=True, check=True)
     
@@ -76,4 +79,4 @@ def train():
 
 if __name__ == "__main__":
     with app.run():
-        train.remote()
+        train.remote(ambiguous=True)
