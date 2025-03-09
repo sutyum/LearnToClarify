@@ -1,13 +1,13 @@
 import verifiers as vf
 
-model_name = "Qwen/Qwen2.5-0.5B-Instruct"
+model_name = "chinmaydk99/Qwen2.5-0.5b-GRPO-math",
 model, tokenizer = vf.get_model_and_tokenizer(model_name)
 
-vf_env = vf.MathEnv(dataset="gsm8k")
+vf_env = vf.MathEnv(dataset="Technoculture/ambiguous_gsm8k")
 dataset = vf_env.get_dataset()
 rubric = vf_env.get_rubric()
 
-run_name = "gsm8k_" + model_name.split("/")[-1].lower()
+run_name = "ambiguous_gsm8k_" + model_name.split("/")[-1].lower()
 
 training_args = vf.get_default_grpo_config(run_name=run_name, num_gpus=1)
 
@@ -20,7 +20,7 @@ training_args = vf.get_default_grpo_config(run_name=run_name, num_gpus=1)
 # training_args.gradient_accumulation_steps = 1
 # training_args.use_liger_kernel = True
 # training_args.gradient_checkpointing = True
-print(training_args)
+
 
 trainer = vf.GRPOEnvTrainer(
     model=model,
